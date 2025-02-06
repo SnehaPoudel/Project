@@ -2,7 +2,7 @@ import Button from "@/components/Buttons";
 
 
 export default function Home() {
-  // Handle button click events
+  
   const handleClick = (message: string) => {
     alert(message);
   };
@@ -17,12 +17,6 @@ export default function Home() {
       </Button>
       <Button onClick={() => handleClick("Outline Button Clicked")} variant="outline">
         Outline
-      </Button>
-      <Button onClick={() => handleClick("Danger Button Clicked")} variant="danger">
-        Danger
-      </Button>
-      <Button onClick={() => handleClick("Disabled Button Clicked")} disabled>
-        Disabled
       </Button>
     </div>
   );
