@@ -1,7 +1,7 @@
-const Home = () => {
+const Home= () => {
   return (
     <div>
-      <h1>Hello world</h1>
+      <h1>Hello, this is the page!</h1>
     </div>
   );
 };
