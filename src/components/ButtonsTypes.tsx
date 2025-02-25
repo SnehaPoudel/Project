@@ -5,8 +5,6 @@ import PlusIcon from "@/components/Icons/PlusIcon";
 import PrimaryIcon from "@/components/Icons/PrimaryIcon";
 import SecondaryIcon from "@/components/Icons/SecondaryIcon";
 
-
-
 export default function ButtonsTypes() {
     const handleClick = (message: string) => {
         alert(message);
