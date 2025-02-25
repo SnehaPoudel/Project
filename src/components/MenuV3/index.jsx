@@ -1,3 +1,4 @@
+"use client"
 import React from 'react';
 import clsx from 'clsx';
 
@@ -39,14 +40,17 @@ const MenuV3 = ({
           ${isActive ? '!bg-blue-100' : 'hover:bg-neutral-100'}`}
       >
         <div className="flex h-6 items-center gap-2.5">
+          {/* Checkbox to indicate selection */}
           <input
             type="checkbox"
             checked={isActive}
             onChange={() => onOptionClick(option.key)}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()} // Prevent event bubbling to parent div
             className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
           />
+          {/* Optional icon display */}
           {showIcons && option.icon && <div>{option.icon}</div>}
+          {/* Option label with conditional styling based on selection */}
           <div
             className={`text-sm text-neutral-800 ${
               isActive
@@ -57,6 +61,7 @@ const MenuV3 = ({
             {option.label}
           </div>
         </div>
+        {/* Optional subtitle display */}
         {showSubtitles && option.subtitle && (
           <div
             className={clsx('text-sm text-neutral-600', {
@@ -70,6 +75,7 @@ const MenuV3 = ({
     );
   });
 
+  // "Select All" option (if not hidden)
   if (!hideSelectAll) {
     const allSelected = activeKey.length === options.length;
     optionsList.unshift(
@@ -83,7 +89,7 @@ const MenuV3 = ({
             type="checkbox"
             checked={allSelected}
             onChange={() => onOptionClick('all')}
-            onClick={(e) => e.stopPropagation()}
+            onClick={(e) => e.stopPropagation()} // Prevent event bubbling
             className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
           />
           <span>Select All</span>
@@ -91,6 +97,7 @@ const MenuV3 = ({
       </div>
     );
   }
+  
   return <div className="py-2">{optionsList}</div>;
 };
 

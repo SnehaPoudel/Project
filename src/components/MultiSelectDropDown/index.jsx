@@ -1,3 +1,5 @@
+// MultiSelectDropdown/index.jsx
+"use client"
 import React, { useState, useEffect, useRef } from 'react';
 import ChevronDownIcon from '../Icons/ChevronDownIcon';
 import MenuV3 from './../MenuV3';
@@ -15,13 +17,20 @@ const MultiSelectDropdown = ({
   dropdownWidth = 'w-full',
   ...props
 }) => {
+  // State to track dropdown open/close state
   const [open, setOpen] = useState(false);
+  // Stores the selected options
   const [selectedOptions, setSelectedOptions] = useState([]);
+  // Stores the filtered options (for future search/filtering functionality)
   const [filteredOptions, setFilteredOptions] = useState(options);
+  // Determines whether the dropdown should open above the input
   const [positionAbove, setPositionAbove] = useState(false);
+  
+  // Refs for handling outside clicks
   const containerRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Syncs selected values with Formik form state (if provided)
   useEffect(() => {
     if (field && field.value) {
       const selected = options.filter((item) => field.value.includes(item.key));
@@ -31,10 +40,12 @@ const MultiSelectDropdown = ({
     }
   }, [field?.value, options]);
 
+  // Updates filtered options when options list changes
   useEffect(() => {
     setFilteredOptions(options);
   }, [options]);
 
+  // Closes dropdown when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -47,6 +58,7 @@ const MultiSelectDropdown = ({
     };
   }, []);
 
+  // Determines dropdown position (above or below input)
   useEffect(() => {
     if (!open) return;
     const updatePosition = () => {
@@ -55,6 +67,7 @@ const MultiSelectDropdown = ({
       const spaceAbove = rect.top;
       const spaceBelow = window.innerHeight - rect.bottom;
       const estimatedDropdownHeight = 300;
+      
       if (spaceBelow >= estimatedDropdownHeight) {
         setPositionAbove(false);
       } else if (spaceAbove >= estimatedDropdownHeight) {
@@ -63,6 +76,7 @@ const MultiSelectDropdown = ({
         setPositionAbove(spaceAbove > spaceBelow);
       }
     };
+    
     updatePosition();
     window.addEventListener('resize', updatePosition);
     document.addEventListener('scroll', updatePosition, true);
@@ -72,8 +86,10 @@ const MultiSelectDropdown = ({
     };
   }, [open]);
 
+  // Handles selection of an option
   const onSelect = (key) => {
     if (key === 'all') {
+      // Toggle select/deselect all options
       const allKeys = options.map((option) => option.key);
       if (selectedOptions.length === options.length) {
         setSelectedOptions([]);
@@ -89,20 +105,22 @@ const MultiSelectDropdown = ({
         handleSelect(allKeys);
       }
     } else {
-      const selectedItem = options.find((item) => item.key === key);   // Checks if the selected item is already in the selectedOptions array.
+      // Toggle selection of individual options
+      const selectedItem = options.find((item) => item.key === key);
       if (selectedItem) {
         setSelectedOptions((prev) => {
           const isSelected = prev.some((item) => item.key === key);
-          const newSelectedOptions = isSelected                          
-            ? prev.filter((item) => item.key !== key)            // If selected, remove it
-            : [...prev, selectedItem];                //If not selected, add it
+          const newSelectedOptions = isSelected 
+            ? prev.filter((item) => item.key !== key) // If selected, remove it
+            : [...prev, selectedItem]; // If not selected, add it
+          
           if (field && form) {
             form.setFieldValue(
               field.name,
               newSelectedOptions.map((item) => item.key)
             );
           }
-          handleSelect(newSelectedOptions.map((item) => item.key));   // updated selection
+          handleSelect(newSelectedOptions.map((item) => item.key)); // Notify parent
           return newSelectedOptions;
         });
       }
@@ -110,10 +128,12 @@ const MultiSelectDropdown = ({
     setFilteredOptions(options);
   };
 
+  // Toggles dropdown open/close state
   const toggleDropdown = () => {
     setOpen(!open);
   };
 
+  // Determines input height based on size prop
   const inputHeightClass =
     size === 'xl'
       ? 'h-12'
@@ -126,11 +146,13 @@ const MultiSelectDropdown = ({
       ref={containerRef}
       className={`relative w-full`}
     >
+      {/* Dropdown Trigger */}
       <div
         onClick={toggleDropdown}
         ref={inputRef}
         className={`w-full flex items-center justify-between px-4 border border-[#D7DADC] rounded-md ${extraClass} cursor-pointer ${inputHeightClass} ${bgColorClaSS}`}
       >
+        {/* Display selected options */}
         <div className="flex items-center w-full overflow-hidden">
           {selectedOptions.length > 0 ? (
             <div className="flex items-center justify-start gap-2 flex-wrap w-full">
@@ -147,6 +169,7 @@ const MultiSelectDropdown = ({
             <span className="text-sm text-[#7B8698] truncate">{title}</span>
           )}
         </div>
+        {/* Chevron Icon */}
         <ChevronDownIcon
           className={`h-5 w-5 transition-transform duration-200 ${
             open ? 'rotate-180 text-neutral-800' : 'text-[#D7DADC]'
@@ -154,6 +177,7 @@ const MultiSelectDropdown = ({
         />
       </div>
 
+      {/* Dropdown Menu */}
       {open && (
         <div
           className={`app-drop-shadow absolute z-10 bg-white rounded-md ${
