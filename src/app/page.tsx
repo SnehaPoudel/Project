@@ -48,25 +48,28 @@ const Page = () => {
   };
 
   return (
-    <div className="p-6">
-      <h1 className="text-2xl font-semibold mb-4">KYB Status Filter</h1>
-      {/* MultiSelectDropdown component to select KYB statuses */}
-      <MultiSelectDropdown
-        title="KYB"
-        options={getKybStatusOptions as any} // Provide KYB status options
-        extraClass="!w-full text-neutral-500" 
-        bgColorClaSS="bg-none"
-        size="xl"
-        showIcons={false} 
-        dropdownWidth="w-full" 
-        field={{ value: filterStates.status }} // Bind the selected statuses
-        handleSelect={handleKYBStatusSelect as any} // Handle status selection
-      />
-      <div className="mt-4">
-        <p>
-          <strong>Selected Status:</strong> {filterStates.status.length === 0 ? "None" : filterStates.status.join(', ')}
-        </p>
+    <div className="p-6 flex items-center justify-center min-h-screen bg-gray-100">
+      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+        <h1 className="text-2xl font-semibold mb-4">KYB Status Filter</h1>
+        {/* MultiSelectDropdown component to select KYB statuses */}
+        <MultiSelectDropdown
+          title="KYB"
+          options={getKybStatusOptions as any} // Provide KYB status options
+          extraClass="!w-full text-neutral-500" 
+          bgColorClaSS="bg-none"
+          size="xl"
+          showIcons={false} 
+          dropdownWidth="w-full" 
+          field={{ value: filterStates.status }} // Bind the selected statuses
+          handleSelect={handleKYBStatusSelect as any} // Handle status selection
+        />
+        <div className="mt-4">
+          <p>
+            <strong>Selected Status:</strong> {filterStates.status.length === 0 ? "None" : filterStates.status.join(', ')}
+          </p>
+        </div>
       </div>
+      
     </div>
   );
 };
