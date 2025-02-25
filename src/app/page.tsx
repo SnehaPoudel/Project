@@ -1,7 +1,6 @@
 "use client";
 import React, { useState } from "react";
-import AppDropdownV2 from './../components/AppDropdownV2/index';
-
+import MultiSelectDropdown from './../components/MultiSelectDropdown';
 
 export const kybStatus = [
   "PENDING",
@@ -11,48 +10,51 @@ export const kybStatus = [
   "REJECTED",
 ];
 
-export const getKybStatusOptions = [
-  {
-    key: "",
-    label: "All",
-    name: "",
-  },
-  ...kybStatus.map((status) => ({
-    key: status,
-    label: status,
-    name: status,
-  })),
-];
+export const getKybStatusOptions = kybStatus.map((status) => ({   
+  key: status,
+  label: status,
+  name: status,
+}));
 
 const Page = () => {
-  const [filterStates, setFilterStates] = useState({
+  const [filterStates, setFilterStates] = useState<{ page: number; status: string[] }>({
     page: 1,
-    status: "PENDING",
+    status: [],
   });
 
-  const handleKYBStatusSelect = (status) => {
-    setFilterStates((prev) => ({
-      ...prev,
-      status: status,
-      page: 1,
-    }));
+  const handleKYBStatusSelect = (statuses) => {
+    if (statuses.includes("all")) {
+      setFilterStates((prev) => ({
+        ...prev,
+        status: kybStatus,
+        page: 1,
+      }));
+    } else {
+      setFilterStates((prev) => ({
+        ...prev,
+        status: statuses,
+        page: 1,
+      }));
+    }
   };
 
   return (
     <div className="p-6">
       <h1 className="text-2xl font-semibold mb-4">KYB Status Filter</h1>
-      <AppDropdownV2
+      <MultiSelectDropdown
         title="KYB"
         options={getKybStatusOptions as any}
-        extraClass="!w-[140px] text-neutral-500"
+        extraClass="!w-full text-neutral-500"
         bgColorClaSS="bg-none"
         size="xl"
+        showIcons={false} 
+        dropdownWidth="w-full" 
         field={{ value: filterStates.status }}
         handleSelect={handleKYBStatusSelect as any}
       />
       <div className="mt-4">
         <p>
-          <strong>Selected Status:</strong> {filterStates.status || "All"}
+          <strong>Selected Status:</strong> {filterStates.status.length === 0 ? "None" : filterStates.status.join(', ')}
         </p>
       </div>
     </div>
