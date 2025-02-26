@@ -36,12 +36,16 @@ const MultiSelectDropdown = ({
   }, [field?.value, options]);
 
   useEffect(() => {
-    setFilteredOptions(
-      options.filter((option) =>
-        option.label.toLowerCase().includes(searchQuery.toLowerCase())
-      )
+    const selected = selectedOptions.filter((option) =>
+      option.label.toLowerCase().includes(searchQuery.toLowerCase())
     );
-  }, [options, searchQuery]);
+    const unselected = options.filter(
+      (option) =>
+        !selectedOptions.some((selected) => selected.key === option.key) &&
+        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+    setFilteredOptions([...selected, ...unselected]);
+  }, [options, searchQuery, selectedOptions]);
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -54,33 +58,6 @@ const MultiSelectDropdown = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
-
-  useEffect(() => {
-    if (!open) return;
-    const updatePosition = () => {
-      if (!containerRef.current) return;
-      const rect = containerRef.current.getBoundingClientRect();
-      const spaceAbove = rect.top;
-      const spaceBelow = window.innerHeight - rect.bottom;
-      const estimatedDropdownHeight = 300;
-
-      if (spaceBelow >= estimatedDropdownHeight) {
-        setPositionAbove(false);
-      } else if (spaceAbove >= estimatedDropdownHeight) {
-        setPositionAbove(true);
-      } else {
-        setPositionAbove(spaceAbove > spaceBelow);
-      }
-    };
-
-    updatePosition();
-    window.addEventListener("resize", updatePosition);
-    document.addEventListener("scroll", updatePosition, true);
-    return () => {
-      window.removeEventListener("resize", updatePosition);
-      document.removeEventListener("scroll", updatePosition, true);
-    };
-  }, [open]);
 
   const onSelect = (key) => {
     if (key === "all") {
@@ -118,17 +95,12 @@ const MultiSelectDropdown = ({
         });
       }
     }
-    setFilteredOptions(options);
-  };
-
-  const toggleDropdown = () => {
-    setOpen(!open);
   };
 
   return (
     <div id={props.id} tabIndex="0" ref={containerRef} className="relative w-full">
       <div
-        onClick={toggleDropdown}
+        onClick={() => setOpen(!open)}
         ref={inputRef}
         className={`w-full flex items-center justify-between flex-wrap rounded-lg cursor-pointer transition-all duration-300 
           ${bgColorClaSS} ${extraClass} px-4 py-2 border border-gray-300 shadow-sm`}
@@ -153,26 +125,15 @@ const MultiSelectDropdown = ({
                   </button>
                 </span>
               ))}
-              {!showAll && selectedOptions.length > 6 && (
+              {selectedOptions.length > 6 && (
                 <button
-                  className="bg-blue-100 text-blue-600 text-sm font-medium px-2 py-1 rounded-md cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
-                    setShowAll(true);
+                    setShowAll(!showAll);
                   }}
+                  className="text-blue-600 bg-blue-100 text-sm font-medium px-2 py-1 rounded-md hover:bg-blue-50 transition"
                 >
-                  +{selectedOptions.length - 6} More
-                </button>
-              )}
-              {showAll && (
-                <button
-                  className="bg-blue-100 text-blue-600 text-sm font-medium px-2 py-1 rounded-md cursor-pointer"
-                  onClick={(e) => {
-                    e.stopPropagation();
-                    setShowAll(false);
-                  }}
-                >
-                  Less
+                  {showAll ? "Less" : `+${selectedOptions.length - 6} More`}
                 </button>
               )}
             </>

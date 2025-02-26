@@ -29,56 +29,15 @@ const MenuV3 = ({
   activeKey = [],
   onOptionClick = () => {},
 }) => {
-  // Map each option into a clickable div.
-  const optionsList = options.map((option) => {
-    const isActive = activeKey.includes(option.key);
-    return (
-      <div
-        key={option.key}
-        onClick={() => onOptionClick(option.key)}
-        className={`flex items-center justify-between gap-2.5 px-3 py-2 cursor-pointer select-none rounded-[4px] font-normal bg-[#FAFAFA]
-          ${isActive ? '!bg-blue-100' : 'hover:bg-neutral-100'}`}
-      >
-        <div className="flex h-6 items-center gap-2.5">
-          {/* Checkbox to indicate selection */}
-          <input
-            type="checkbox"
-            checked={isActive}
-            onChange={() => onOptionClick(option.key)}
-            onClick={(e) => e.stopPropagation()} // Prevent event bubbling to parent div
-            className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
-          />
-          {/* Optional icon display */}
-          {showIcons && option.icon && <div>{option.icon}</div>}
-          {/* Option label with conditional styling based on selection */}
-          <div
-            className={`text-sm text-neutral-800 ${
-              isActive
-                ? '!text-blue-600 !font-medium'
-                : 'hover:text-neutral-900'
-            }`}
-          >
-            {option.label}
-          </div>
-        </div>
-        {/* Optional subtitle display */}
-        {showSubtitles && option.subtitle && (
-          <div
-            className={clsx('text-sm text-neutral-600', {
-              '!text-blue-600 !font-medium': isActive,
-            })}
-          >
-            {option.subtitle}
-          </div>
-        )}
-      </div>
-    );
-  });
-
   // "Select All" option (if not hidden)
+  const allSelected = activeKey.length === options.length;
+  const selectedOptions = options.filter(option => activeKey.includes(option.key));
+  const unselectedOptions = options.filter(option => !activeKey.includes(option.key));
+
+  const optionsList = [];
+
   if (!hideSelectAll) {
-    const allSelected = activeKey.length === options.length;
-    optionsList.unshift(
+    optionsList.push(
       <div
         key="all"
         onClick={() => onOptionClick('all')}
@@ -89,15 +48,71 @@ const MenuV3 = ({
             type="checkbox"
             checked={allSelected}
             onChange={() => onOptionClick('all')}
-            onClick={(e) => e.stopPropagation()} 
+            onClick={(e) => e.stopPropagation()}
             className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
           />
           <span>SELECT ALL</span>
         </div>
       </div>
     );
+    optionsList.push(<div key="divider-1" className="border-t border-gray-200 my-2"></div>);
   }
-  
+
+  // Map selected options
+  selectedOptions.forEach(option => {
+    const isActive = activeKey.includes(option.key);
+    optionsList.push(
+      <div
+        key={option.key}
+        onClick={() => onOptionClick(option.key)}
+        className={`flex items-center justify-between gap-2.5 px-3 py-2 cursor-pointer select-none rounded-[4px] font-normal bg-[#FAFAFA]
+          ${isActive ? '!bg-blue-100' : 'hover:bg-neutral-100'}`}
+      >
+        <div className="flex h-6 items-center gap-2.5">
+          <input
+            type="checkbox"
+            checked={isActive}
+            onChange={() => onOptionClick(option.key)}
+            onClick={(e) => e.stopPropagation()}
+            className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+          />
+          {showIcons && option.icon && <div>{option.icon}</div>}
+          <div className={`text-sm text-neutral-800 ${isActive ? '!text-blue-600 !font-medium' : 'hover:text-neutral-900'}`}>{option.label}</div>
+        </div>
+        {showSubtitles && option.subtitle && (
+          <div className={clsx('text-sm text-neutral-600', { '!text-blue-600 !font-medium': isActive })}>{option.subtitle}</div>
+        )}
+      </div>
+    );
+  });
+
+  if (selectedOptions.length > 0 && unselectedOptions.length > 0) {
+    optionsList.push(<div key="divider-2" className="border-t border-gray-200 my-2"></div>);
+  }
+
+  // Map unselected options
+  unselectedOptions.forEach(option => {
+    optionsList.push(
+      <div
+        key={option.key}
+        onClick={() => onOptionClick(option.key)}
+        className="flex items-center justify-between px-3 py-2 cursor-pointer select-none bg-[#FAFAFA] hover:bg-neutral-100 text-sm text-neutral-800"
+      >
+        <div className="flex items-center gap-2.5">
+          <input
+            type="checkbox"
+            checked={activeKey.includes(option.key)}
+            onChange={() => onOptionClick(option.key)}
+            onClick={(e) => e.stopPropagation()}
+            className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+          />
+          {showIcons && option.icon && <div>{option.icon}</div>}
+          <span>{option.label}</span>
+        </div>
+      </div>
+    );
+  });
+
   return <div className="py-2">{optionsList}</div>;
 };
 
