@@ -16,19 +16,16 @@ const MultiSelectDropdown = ({
   dropdownWidth = "w-full",
   ...props
 }) => {
-  // State variables
-  const [open, setOpen] = useState(false); // Controls dropdown visibility
-  const [selectedOptions, setSelectedOptions] = useState([]); // Stores selected options
-  const [filteredOptions, setFilteredOptions] = useState(options); // Stores filtered options based on search
-  const [positionAbove, setPositionAbove] = useState(false); // Determines dropdown position
-  const [showAll, setShowAll] = useState(false); // Controls display of additional selected items
-  const [searchQuery, setSearchQuery] = useState(""); // Stores search input value
+  const [open, setOpen] = useState(false);
+  const [selectedOptions, setSelectedOptions] = useState([]);
+  const [filteredOptions, setFilteredOptions] = useState(options);
+  const [positionAbove, setPositionAbove] = useState(false);
+  const [showAll, setShowAll] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
 
-  // Refs for handling click outside and focus behavior
   const containerRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Effect to sync selected options with form field values
   useEffect(() => {
     if (field && field.value) {
       const selected = options.filter((item) => field.value.includes(item.key));
@@ -38,7 +35,6 @@ const MultiSelectDropdown = ({
     }
   }, [field?.value, options]);
 
-  // Effect to filter options based on search query
   useEffect(() => {
     setFilteredOptions(
       options.filter((option) =>
@@ -47,7 +43,6 @@ const MultiSelectDropdown = ({
     );
   }, [options, searchQuery]);
 
-  // Effect to close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -60,7 +55,6 @@ const MultiSelectDropdown = ({
     };
   }, []);
 
-  // Effect to adjust dropdown position based on available space
   useEffect(() => {
     if (!open) return;
     const updatePosition = () => {
@@ -88,7 +82,6 @@ const MultiSelectDropdown = ({
     };
   }, [open]);
 
-  // Function to handle selection and deselection of options
   const onSelect = (key) => {
     if (key === "all") {
       const allKeys = options.map((option) => option.key);
@@ -128,21 +121,18 @@ const MultiSelectDropdown = ({
     setFilteredOptions(options);
   };
 
-  // Function to toggle dropdown visibility
   const toggleDropdown = () => {
     setOpen(!open);
   };
 
   return (
     <div id={props.id} tabIndex="0" ref={containerRef} className="relative w-full">
-      {/* Dropdown input box */}
       <div
         onClick={toggleDropdown}
         ref={inputRef}
         className={`w-full flex items-center justify-between flex-wrap rounded-lg cursor-pointer transition-all duration-300 
           ${bgColorClaSS} ${extraClass} px-4 py-2 border border-gray-300 shadow-sm`}
       >
-        {/* Selected options display */}
         <div className="flex flex-wrap gap-2 flex-1">
           {selectedOptions.length > 0 ? (
             <>
@@ -165,11 +155,10 @@ const MultiSelectDropdown = ({
               ))}
               {!showAll && selectedOptions.length > 6 && (
                 <button
-                  className="bg-blue-100 text-blue-600 text-sm font-medium px-2 py-1 rounded-md flex items-center cursor-pointer"
+                  className="bg-blue-100 text-blue-600 text-sm font-medium px-2 py-1 rounded-md cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowAll(true);
-                    setOpen(true);
                   }}
                 >
                   +{selectedOptions.length - 6} More
@@ -177,7 +166,7 @@ const MultiSelectDropdown = ({
               )}
               {showAll && (
                 <button
-                  className="bg-blue-100 text-blue-600 text-sm font-medium px-2 py-1 rounded-md flex items-center cursor-pointer"
+                  className="bg-blue-100 text-blue-600 text-sm font-medium px-2 py-1 rounded-md cursor-pointer"
                   onClick={(e) => {
                     e.stopPropagation();
                     setShowAll(false);
@@ -193,8 +182,26 @@ const MultiSelectDropdown = ({
         </div>
         <ChevronDownIcon className={`h-5 w-5 transition-transform duration-200 ${open ? "rotate-180 text-gray-700" : "text-gray-400"}`} />
       </div>
-      {/* Dropdown options */}
-      {open && <MenuV3 options={filteredOptions} activeKey={selectedOptions.map((option) => option.key)} onOptionClick={onSelect} showIcons={showIcons} title={title} />}
+      {open && (
+        <div className={`absolute z-10 bg-white rounded-md shadow-lg ${positionAbove ? "bottom-full mb-2" : "top-full mt-2"} ${dropdownWidth}`}>
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full p-2 border-b border-gray-300 text-sm outline-none"
+          />
+          <div className="my-2.5 mx-2.5">
+            <MenuV3
+              options={filteredOptions}
+              activeKey={selectedOptions.map((option) => option.key)}
+              onOptionClick={onSelect}
+              showIcons={showIcons}
+              title={title}
+            />
+          </div>
+        </div>
+      )}
     </div>
   );
 };
