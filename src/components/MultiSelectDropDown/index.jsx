@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useRef } from "react";
 import ChevronDownIcon from "../Icons/ChevronDownIcon";
-import MenuV3 from "./../MenuV3";
+import MenuV3 from "../MenuV3";
 
 const MultiSelectDropdown = ({
   title,
@@ -16,15 +16,19 @@ const MultiSelectDropdown = ({
   dropdownWidth = "w-full",
   ...props
 }) => {
-  const [open, setOpen] = useState(false);
-  const [selectedOptions, setSelectedOptions] = useState([]);
-  const [filteredOptions, setFilteredOptions] = useState(options);
-  const [positionAbove, setPositionAbove] = useState(false);
-  const [showAll, setShowAll] = useState(false);
-  
+  // State variables
+  const [open, setOpen] = useState(false); // Controls dropdown visibility
+  const [selectedOptions, setSelectedOptions] = useState([]); // Stores selected options
+  const [filteredOptions, setFilteredOptions] = useState(options); // Stores filtered options based on search
+  const [positionAbove, setPositionAbove] = useState(false); // Determines dropdown position
+  const [showAll, setShowAll] = useState(false); // Controls display of additional selected items
+  const [searchQuery, setSearchQuery] = useState(""); // Stores search input value
+
+  // Refs for handling click outside and focus behavior
   const containerRef = useRef(null);
   const inputRef = useRef(null);
 
+  // Effect to sync selected options with form field values
   useEffect(() => {
     if (field && field.value) {
       const selected = options.filter((item) => field.value.includes(item.key));
@@ -34,10 +38,16 @@ const MultiSelectDropdown = ({
     }
   }, [field?.value, options]);
 
+  // Effect to filter options based on search query
   useEffect(() => {
-    setFilteredOptions(options);
-  }, [options]);
+    setFilteredOptions(
+      options.filter((option) =>
+        option.label.toLowerCase().includes(searchQuery.toLowerCase())
+      )
+    );
+  }, [options, searchQuery]);
 
+  // Effect to close dropdown when clicking outside
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
@@ -50,6 +60,7 @@ const MultiSelectDropdown = ({
     };
   }, []);
 
+  // Effect to adjust dropdown position based on available space
   useEffect(() => {
     if (!open) return;
     const updatePosition = () => {
@@ -77,6 +88,7 @@ const MultiSelectDropdown = ({
     };
   }, [open]);
 
+  // Function to handle selection and deselection of options
   const onSelect = (key) => {
     if (key === "all") {
       const allKeys = options.map((option) => option.key);
@@ -116,113 +128,73 @@ const MultiSelectDropdown = ({
     setFilteredOptions(options);
   };
 
+  // Function to toggle dropdown visibility
   const toggleDropdown = () => {
     setOpen(!open);
   };
 
   return (
     <div id={props.id} tabIndex="0" ref={containerRef} className="relative w-full">
-      {/* Dropdown Trigger */}
+      {/* Dropdown input box */}
       <div
-  onClick={toggleDropdown}
-  ref={inputRef}
-  className={`w-full flex items-center justify-between flex-wrap rounded-md cursor-pointer transition-all duration-300 
-    ${bgColorClaSS} ${extraClass} px-4 py-2 border border-[#D7DADC]`}
->
-  {/* Selected Options - Wrap on multiple lines */}
-
-
-<div className="flex flex-wrap gap-2 flex-1">
-  {selectedOptions.length > 0 ? (
-    <>
-      {selectedOptions
-        .slice(0, showAll ? selectedOptions.length : 6) // Show either all or only 6 options
-        .map((option) => (
-          <span
-            key={option.key}
-            className="bg-blue-100 text-blue-600 text-[11px] font-medium px-2 py-0.5 rounded-md flex items-center"
-          >
-            {option.label}
-            <button
-              className="ml-2 text-blue-700 hover:text-blue-900"
-              onClick={(e) => {
-                e.stopPropagation();
-                onSelect(option.key);
-              }}
-            >
-              ✕
-            </button>
-          </span>
-        ))}
-
-      {/* "+More" Button - Styled like a tag & opens dropdown */}
-      {!showAll && selectedOptions.length > 6 && (
-        <button
-          className="bg-blue-100 text-blue-600 text-[11px] font-medium px-2 py-0.5 rounded-md flex items-center cursor-pointer"
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowAll(true); // Show all options
-            setOpen(true); // Ensure dropdown is open
-          }}
-        >
-          +{selectedOptions.length - 6} More
-        </button>
-      )}
-
-      {/* "Less" Button - Only visible when all options are shown */}
-      {showAll && (
-        <button
-          className="bg-blue-100 text-blue-600 text-[11px] font-medium px-2 py-0.5 rounded-md flex items-center cursor-pointer"
-          onClick={(e) => {
-            e.stopPropagation();
-            setShowAll(false); // Collapse options back to 6
-          }}
-        >
-          Less
-        </button>
-      )}
-    </>
-  ) : (
-    <span className="text-sm text-[#7B8698]">{title}</span>
-  )}
-</div>
-
-
-      {/* Chevron Icon*/}
-      <ChevronDownIcon
-        className={`h-5 w-5 transition-transform duration-200 ${
-          open ? "rotate-180 text-neutral-800" : "text-[#D7DADC]"
-        }`}
-      />
-      </div>
-
-      {/* Dropdown Menu */}
-      {open && (
-        <div
-          className={`absolute z-10 bg-white rounded-md 
-            ${positionAbove ? "bottom-full mb-4" : "top-full mt-4"} 
-            ${dropdownWidth}`}
-          style={{
-            filter: "drop-shadow(0px 4px 16px rgba(0, 0, 0, 0.12))",
-          }}
-        >
-          <div className="my-2.5 mx-2.5">
-            {filteredOptions.length > 0 ? (
-              <MenuV3
-                options={filteredOptions}
-                activeKey={selectedOptions.map((option) => option.key)}
-                onOptionClick={onSelect}
-                showIcons={showIcons}
-                title={title}
-              />
-            ) : (
-              <div className="px-4 py-2 text-center text-sm text-gray-600">
-                Options not available
-              </div>
-            )}
-          </div>
+        onClick={toggleDropdown}
+        ref={inputRef}
+        className={`w-full flex items-center justify-between flex-wrap rounded-lg cursor-pointer transition-all duration-300 
+          ${bgColorClaSS} ${extraClass} px-4 py-2 border border-gray-300 shadow-sm`}
+      >
+        {/* Selected options display */}
+        <div className="flex flex-wrap gap-2 flex-1">
+          {selectedOptions.length > 0 ? (
+            <>
+              {selectedOptions.slice(0, showAll ? selectedOptions.length : 6).map((option) => (
+                <span
+                  key={option.key}
+                  className="bg-blue-100 text-blue-600 text-sm font-medium px-2 py-1 rounded-md flex items-center"
+                >
+                  {option.label}
+                  <button
+                    className="ml-2 text-blue-700 hover:text-blue-900"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onSelect(option.key);
+                    }}
+                  >
+                    ✕
+                  </button>
+                </span>
+              ))}
+              {!showAll && selectedOptions.length > 6 && (
+                <button
+                  className="bg-blue-100 text-blue-600 text-sm font-medium px-2 py-1 rounded-md flex items-center cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowAll(true);
+                    setOpen(true);
+                  }}
+                >
+                  +{selectedOptions.length - 6} More
+                </button>
+              )}
+              {showAll && (
+                <button
+                  className="bg-blue-100 text-blue-600 text-sm font-medium px-2 py-1 rounded-md flex items-center cursor-pointer"
+                  onClick={(e) => {
+                    e.stopPropagation();
+                    setShowAll(false);
+                  }}
+                >
+                  Less
+                </button>
+              )}
+            </>
+          ) : (
+            <span className="text-sm text-gray-500">{title}</span>
+          )}
         </div>
-      )}
+        <ChevronDownIcon className={`h-5 w-5 transition-transform duration-200 ${open ? "rotate-180 text-gray-700" : "text-gray-400"}`} />
+      </div>
+      {/* Dropdown options */}
+      {open && <MenuV3 options={filteredOptions} activeKey={selectedOptions.map((option) => option.key)} onOptionClick={onSelect} showIcons={showIcons} title={title} />}
     </div>
   );
 };

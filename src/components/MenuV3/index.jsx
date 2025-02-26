@@ -89,7 +89,7 @@ const MenuV3 = ({
             type="checkbox"
             checked={allSelected}
             onChange={() => onOptionClick('all')}
-            onClick={(e) => e.stopPropagation()} // Prevent event bubbling
+            onClick={(e) => e.stopPropagation()} 
             className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
           />
           <span>SELECT ALL</span>
