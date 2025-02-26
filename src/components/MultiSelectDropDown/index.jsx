@@ -145,13 +145,15 @@ const MultiSelectDropdown = ({
       </div>
       {open && (
         <div className={`absolute z-10 bg-white rounded-md shadow-lg ${positionAbove ? "bottom-full mb-2" : "top-full mt-2"} ${dropdownWidth}`}>
-          <input
-            type="text"
-            placeholder="Search..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full p-2 border-b border-gray-300 text-sm outline-none"
-          />
+          <div className="p-2 border-b border-gray-300  rounded-md">
+            <input
+              type="text"
+              placeholder="Search..."
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              className="w-full p-2 text-sm outline-none bg-white rounded-md border border-gray-300"
+            />
+          </div>
           <div className="my-2.5 mx-2.5">
             <MenuV3
               options={filteredOptions}
