@@ -1,6 +1,5 @@
-// page.tsx
-
 "use client";
+// page.tsx
 import React, { useState } from "react";
 import MultiSelectDropdown from './../components/MultiSelectDropdown';
 
@@ -11,6 +10,12 @@ export const kybStatus = [
   "SUBMITTED",
   "APPROVED",
   "REJECTED",
+  "REVIEW_REQUIRED",
+  "RESUBMISSION_REQUIRED",
+  "ON_HOLD",
+  "ESCALATED",
+  "EXPIRED",
+  "CANCELLED",
 ];
 
 // Convert KYB status options into dropdown-compatible format

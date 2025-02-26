@@ -1,4 +1,4 @@
-"use client"
+"use client";
 import React from 'react';
 import clsx from 'clsx';
 
@@ -92,7 +92,7 @@ const MenuV3 = ({
             onClick={(e) => e.stopPropagation()} // Prevent event bubbling
             className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
           />
-          <span>Select All</span>
+          <span>SELECT ALL</span>
         </div>
       </div>
     );

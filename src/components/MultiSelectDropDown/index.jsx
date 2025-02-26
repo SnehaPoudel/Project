@@ -1,8 +1,7 @@
-// MultiSelectDropdown/index.jsx
-"use client"
-import React, { useState, useEffect, useRef } from 'react';
-import ChevronDownIcon from '../Icons/ChevronDownIcon';
-import MenuV3 from './../MenuV3';
+"use client";
+import React, { useState, useEffect, useRef } from "react";
+import ChevronDownIcon from "../Icons/ChevronDownIcon";
+import MenuV3 from "./../MenuV3";
 
 const MultiSelectDropdown = ({
   title,
@@ -10,27 +9,21 @@ const MultiSelectDropdown = ({
   handleSelect = () => {},
   field,
   form,
-  extraClass = '',
-  bgColorClaSS = 'bg-white',
-  size = 'default',
+  extraClass = "",
+  bgColorClaSS = "bg-white",
+  size = "default",
   showIcons = false,
-  dropdownWidth = 'w-full',
+  dropdownWidth = "w-full",
   ...props
 }) => {
-  // State to track dropdown open/close state
   const [open, setOpen] = useState(false);
-  // Stores the selected options
   const [selectedOptions, setSelectedOptions] = useState([]);
-  // Stores the filtered options (for future search/filtering functionality)
   const [filteredOptions, setFilteredOptions] = useState(options);
-  // Determines whether the dropdown should open above the input
   const [positionAbove, setPositionAbove] = useState(false);
   
-  // Refs for handling outside clicks
   const containerRef = useRef(null);
   const inputRef = useRef(null);
 
-  // Syncs selected values with Formik form state (if provided)
   useEffect(() => {
     if (field && field.value) {
       const selected = options.filter((item) => field.value.includes(item.key));
@@ -40,25 +33,22 @@ const MultiSelectDropdown = ({
     }
   }, [field?.value, options]);
 
-  // Updates filtered options when options list changes
   useEffect(() => {
     setFilteredOptions(options);
   }, [options]);
 
-  // Closes dropdown when clicking outside of it
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
         setOpen(false);
       }
     };
-    document.addEventListener('mousedown', handleClickOutside);
+    document.addEventListener("mousedown", handleClickOutside);
     return () => {
-      document.removeEventListener('mousedown', handleClickOutside);
+      document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
 
-  // Determines dropdown position (above or below input)
   useEffect(() => {
     if (!open) return;
     const updatePosition = () => {
@@ -67,7 +57,7 @@ const MultiSelectDropdown = ({
       const spaceAbove = rect.top;
       const spaceBelow = window.innerHeight - rect.bottom;
       const estimatedDropdownHeight = 300;
-      
+
       if (spaceBelow >= estimatedDropdownHeight) {
         setPositionAbove(false);
       } else if (spaceAbove >= estimatedDropdownHeight) {
@@ -76,20 +66,18 @@ const MultiSelectDropdown = ({
         setPositionAbove(spaceAbove > spaceBelow);
       }
     };
-    
+
     updatePosition();
-    window.addEventListener('resize', updatePosition);
-    document.addEventListener('scroll', updatePosition, true);
+    window.addEventListener("resize", updatePosition);
+    document.addEventListener("scroll", updatePosition, true);
     return () => {
-      window.removeEventListener('resize', updatePosition);
-      document.removeEventListener('scroll', updatePosition, true);
+      window.removeEventListener("resize", updatePosition);
+      document.removeEventListener("scroll", updatePosition, true);
     };
   }, [open]);
 
-  // Handles selection of an option
   const onSelect = (key) => {
-    if (key === 'all') {
-      // Toggle select/deselect all options
+    if (key === "all") {
       const allKeys = options.map((option) => option.key);
       if (selectedOptions.length === options.length) {
         setSelectedOptions([]);
@@ -105,22 +93,21 @@ const MultiSelectDropdown = ({
         handleSelect(allKeys);
       }
     } else {
-      // Toggle selection of individual options
       const selectedItem = options.find((item) => item.key === key);
       if (selectedItem) {
         setSelectedOptions((prev) => {
           const isSelected = prev.some((item) => item.key === key);
-          const newSelectedOptions = isSelected 
-            ? prev.filter((item) => item.key !== key) // If selected, remove it
-            : [...prev, selectedItem]; // If not selected, add it
-          
+          const newSelectedOptions = isSelected
+            ? prev.filter((item) => item.key !== key)
+            : [...prev, selectedItem];
+
           if (field && form) {
             form.setFieldValue(
               field.name,
               newSelectedOptions.map((item) => item.key)
             );
           }
-          handleSelect(newSelectedOptions.map((item) => item.key)); // Notify parent
+          handleSelect(newSelectedOptions.map((item) => item.key));
           return newSelectedOptions;
         });
       }
@@ -128,73 +115,70 @@ const MultiSelectDropdown = ({
     setFilteredOptions(options);
   };
 
-  // Toggles dropdown open/close state
   const toggleDropdown = () => {
     setOpen(!open);
   };
 
-  // Determines input height based on size prop
-  const inputHeightClass =
-    size === 'xl'
-      ? 'h-12'
-      : 'h-10';
-
   return (
-    <div
-      id={props.id}
-      tabIndex="0"
-      ref={containerRef}
-      className={`relative w-full`}
-    >
+    <div id={props.id} tabIndex="0" ref={containerRef} className="relative w-full">
       {/* Dropdown Trigger */}
       <div
-        onClick={toggleDropdown}
-        ref={inputRef}
-        className={`w-full flex items-center justify-between px-4 border border-[#D7DADC] rounded-md ${extraClass} cursor-pointer ${inputHeightClass} ${bgColorClaSS}`}
+      onClick={toggleDropdown}
+      ref={inputRef}
+      className={`w-full flex items-center justify-between flex-wrap rounded-md cursor-pointer transition-all duration-300 
+        ${bgColorClaSS} ${extraClass} px-4 py-2 border border-[#D7DADC]`}
       >
-        {/* Display selected options */}
-        <div className="flex items-center w-full overflow-hidden">
-          {selectedOptions.length > 0 ? (
-            <div className="flex items-center justify-start gap-2 flex-wrap w-full">
-              {selectedOptions.map((option) => (
-                <span
-                  key={option.key}
-                  className="bg-blue-100 text-blue-600 text-xs font-semibold mr-2 px-2.5 py-0.5 rounded"
-                >
-                  {option.label}
-                </span>
-              ))}
-            </div>
-          ) : (
-            <span className="text-sm text-[#7B8698] truncate">{title}</span>
-          )}
-        </div>
-        {/* Chevron Icon */}
-        <ChevronDownIcon
-          className={`h-5 w-5 transition-transform duration-200 ${
-            open ? 'rotate-180 text-neutral-800' : 'text-[#D7DADC]'
-          }`}
-        />
+      {/* Selected Options - Wrap on multiple lines */}
+      <div className="flex flex-wrap gap-2 flex-1">
+        {selectedOptions.length > 0 ? (
+          selectedOptions.map((option) => (
+            <span
+              key={option.key}
+              className="bg-blue-100 text-blue-600 text-[11px] font-medium px-2 py-0.5 rounded-md flex items-center"
+            >
+              {option.label}
+              <button
+                className="ml-2 text-blue-700 hover:text-blue-900"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onSelect(option.key);
+                }}
+              >
+                ✕
+              </button>
+            </span>
+          ))
+        ) : (
+          <span className="text-sm text-[#7B8698]">{title}</span>
+        )}
+      </div>
+
+      {/* Chevron Icon*/}
+      <ChevronDownIcon
+        className={`h-5 w-5 transition-transform duration-200 ${
+          open ? "rotate-180 text-neutral-800" : "text-[#D7DADC]"
+        }`}
+      />
       </div>
 
       {/* Dropdown Menu */}
       {open && (
         <div
-          className={`app-drop-shadow absolute z-10 bg-white rounded-md ${
-            positionAbove ? 'bottom-full mb-4' : 'top-full mt-4'
-          } ${dropdownWidth}`}
+          className={`absolute z-10 bg-white rounded-md 
+            ${positionAbove ? "bottom-full mb-4" : "top-full mt-4"} 
+            ${dropdownWidth}`}
           style={{
-            filter: 'drop-shadow(0px 4px 16px rgba(0, 0, 0, 0.12))',
+            filter: "drop-shadow(0px 4px 16px rgba(0, 0, 0, 0.12))",
           }}
         >
-          <div className="custom-scrollbar-none my-2.5 mx-2.5 max-h-60 overflow-y-auto">
+          <div className="my-2.5 mx-2.5">
             {filteredOptions.length > 0 ? (
               <MenuV3
                 options={filteredOptions}
                 activeKey={selectedOptions.map((option) => option.key)}
                 onOptionClick={onSelect}
                 showIcons={showIcons}
-                title={title} // Pass the title to MenuV3
+                title={title}
               />
             ) : (
               <div className="px-4 py-2 text-center text-sm text-gray-600">
