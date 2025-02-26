@@ -20,6 +20,7 @@ const MultiSelectDropdown = ({
   const [selectedOptions, setSelectedOptions] = useState([]);
   const [filteredOptions, setFilteredOptions] = useState(options);
   const [positionAbove, setPositionAbove] = useState(false);
+  const [showAll, setShowAll] = useState(false);
   
   const containerRef = useRef(null);
   const inputRef = useRef(null);
@@ -123,35 +124,69 @@ const MultiSelectDropdown = ({
     <div id={props.id} tabIndex="0" ref={containerRef} className="relative w-full">
       {/* Dropdown Trigger */}
       <div
-      onClick={toggleDropdown}
-      ref={inputRef}
-      className={`w-full flex items-center justify-between flex-wrap rounded-md cursor-pointer transition-all duration-300 
-        ${bgColorClaSS} ${extraClass} px-4 py-2 border border-[#D7DADC]`}
-      >
-      {/* Selected Options - Wrap on multiple lines */}
-      <div className="flex flex-wrap gap-2 flex-1">
-        {selectedOptions.length > 0 ? (
-          selectedOptions.map((option) => (
-            <span
-              key={option.key}
-              className="bg-blue-100 text-blue-600 text-[11px] font-medium px-2 py-0.5 rounded-md flex items-center"
+  onClick={toggleDropdown}
+  ref={inputRef}
+  className={`w-full flex items-center justify-between flex-wrap rounded-md cursor-pointer transition-all duration-300 
+    ${bgColorClaSS} ${extraClass} px-4 py-2 border border-[#D7DADC]`}
+>
+  {/* Selected Options - Wrap on multiple lines */}
+
+
+<div className="flex flex-wrap gap-2 flex-1">
+  {selectedOptions.length > 0 ? (
+    <>
+      {selectedOptions
+        .slice(0, showAll ? selectedOptions.length : 6) // Show either all or only 6 options
+        .map((option) => (
+          <span
+            key={option.key}
+            className="bg-blue-100 text-blue-600 text-[11px] font-medium px-2 py-0.5 rounded-md flex items-center"
+          >
+            {option.label}
+            <button
+              className="ml-2 text-blue-700 hover:text-blue-900"
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelect(option.key);
+              }}
             >
-              {option.label}
-              <button
-                className="ml-2 text-blue-700 hover:text-blue-900"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onSelect(option.key);
-                }}
-              >
-                ✕
-              </button>
-            </span>
-          ))
-        ) : (
-          <span className="text-sm text-[#7B8698]">{title}</span>
-        )}
-      </div>
+              ✕
+            </button>
+          </span>
+        ))}
+
+      {/* "+More" Button - Styled like a tag & opens dropdown */}
+      {!showAll && selectedOptions.length > 6 && (
+        <button
+          className="bg-blue-100 text-blue-600 text-[11px] font-medium px-2 py-0.5 rounded-md flex items-center cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowAll(true); // Show all options
+            setOpen(true); // Ensure dropdown is open
+          }}
+        >
+          +{selectedOptions.length - 6} More
+        </button>
+      )}
+
+      {/* "Less" Button - Only visible when all options are shown */}
+      {showAll && (
+        <button
+          className="bg-blue-100 text-blue-600 text-[11px] font-medium px-2 py-0.5 rounded-md flex items-center cursor-pointer"
+          onClick={(e) => {
+            e.stopPropagation();
+            setShowAll(false); // Collapse options back to 6
+          }}
+        >
+          Less
+        </button>
+      )}
+    </>
+  ) : (
+    <span className="text-sm text-[#7B8698]">{title}</span>
+  )}
+</div>
+
 
       {/* Chevron Icon*/}
       <ChevronDownIcon
