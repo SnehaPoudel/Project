@@ -30,6 +30,7 @@ export const kybStatus = [
   "COMPLIANCE_CHECK_PENDING",
   "COMPLIANCE_CHECK_APPROVED",
   "FRAUD_ALERT",
+  
 ];
 
 // Convert KYB status options into dropdown-compatible format
@@ -68,7 +69,7 @@ const Page = () => {
 
   return (
     <div className="p-6 flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-8 rounded-lg shadow-lg w-full max-w-md">
+      <div className="bg-white h-[500px] p-8 rounded-lg shadow-lg w-full max-w-md min-h-[250px]"> 
         <h1 className="text-2xl font-semibold mb-4">KYB Status Filter</h1>
         {/* MultiSelectDropdown component to select KYB statuses */}
         <MultiSelectDropdown
