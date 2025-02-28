@@ -41,7 +41,7 @@ const MenuV3 = ({
       <div
         key="all"
         onClick={() => onOptionClick('all')}
-        className="flex items-center justify-between px-3 py-2 cursor-pointer select-none hover:bg-gray-100 text-sm text-gray-600 bg-[#FAFAFA]"
+        className="flex items-center justify-between px-3 py-2 cursor-pointer select-none hover:bg-gray-100 text-sm text-gray-600"
       >
         <div className="flex items-center gap-2.5">
           <input
@@ -51,11 +51,11 @@ const MenuV3 = ({
             onClick={(e) => e.stopPropagation()}
             className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
           />
-          <span>SELECT ALL</span>
+          <span>Select All</span>
         </div>
       </div>
     );
-    optionsList.push(<div key="divider-1" className="border-t border-gray-200 my-2"></div>);
+    optionsList.push(<div key="divider-1" className="border-t border-gray-200 my-1"></div>);
   }
 
   // Map selected options
@@ -65,8 +65,7 @@ const MenuV3 = ({
       <div
         key={option.key}
         onClick={() => onOptionClick(option.key)}
-        className={`flex items-center justify-between gap-2.5 px-3 py-2 cursor-pointer select-none rounded-[4px] font-normal bg-[#FAFAFA]
-          ${isActive ? '!bg-blue-100' : 'hover:bg-neutral-100'}`}
+        className={`flex items-center justify-between px-3 p-2 gap-2.5 cursor-pointer select-none rounded-[4px] font-normal`}
       >
         <div className="flex h-6 items-center gap-2.5">
           <input
@@ -87,7 +86,7 @@ const MenuV3 = ({
   });
 
   if (selectedOptions.length > 0 && unselectedOptions.length > 0) {
-    optionsList.push(<div key="divider-2" className="border-t border-gray-200 my-2"></div>);
+    optionsList.push(<div key="divider-2" className="border-t border-gray-200 my-1"></div>);
   }
 
   // Map unselected options
@@ -96,7 +95,7 @@ const MenuV3 = ({
       <div
         key={option.key}
         onClick={() => onOptionClick(option.key)}
-        className="flex items-center justify-between px-3 py-2 cursor-pointer select-none bg-[#FAFAFA] hover:bg-neutral-100 text-sm text-neutral-800"
+        className="flex items-center justify-between px-3 py-2 cursor-pointer select-none hover:bg-neutral-100 text-sm text-neutral-800"
       >
         <div className="flex items-center gap-2.5">
           <input
@@ -113,7 +112,7 @@ const MenuV3 = ({
     );
   });
 
-  return <div className="py-2">{optionsList}</div>;
+  return <div >{optionsList}</div>;
 };
 
 export default MenuV3;
