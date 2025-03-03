@@ -21,15 +21,14 @@ body {
 }
 
 
-.hide-scrollbar {
-  -ms-overflow-style: none;  /* For Internet Explorer and Edge */
-  scrollbar-width: none;     /* For Firefox */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
 }
 
-.hide-scrollbar::-webkit-scrollbar {
-  display: none;             /* For Chrome, Safari, and Opera */
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;  /* Firefox */
 }
-
 /* Dropdown container should adapt to available space */
 .dropdown-container {
   display: flex;
@@ -83,3 +82,4 @@ body {
   visibility: hidden;
   opacity: 0;
 }
+

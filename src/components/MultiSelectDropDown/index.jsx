@@ -1,4 +1,3 @@
-"use client";
 import React, { useState, useEffect, useRef } from "react";
 import ChevronDownIcon from "../Icons/ChevronDownIcon";
 import MenuV3 from "../MenuV3";
@@ -23,6 +22,8 @@ const MultiSelectDropdown = ({
   const [filteredOptions, setFilteredOptions] = useState(options);
   const [searchQuery, setSearchQuery] = useState("");
   const [dropdownPosition, setDropdownPosition] = useState("bottom");
+  
+  const [isContainerFocused, setIsContainerFocused] = useState(false);
   const scrollContainerRef = useRef(null);
   const containerRef = useRef(null);
   const dropdownRef = useRef(null);
@@ -60,6 +61,7 @@ const MultiSelectDropdown = ({
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
         setOpen(false);
+        setIsContainerFocused(false); // Reset focus state when clicking outside
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -126,16 +128,28 @@ const MultiSelectDropdown = ({
     }, 0);
   };
 
+  const handleFocus = () => {
+    setIsFocused(true); // Set focused state when the input is focused
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false); // Reset focus state when the input loses focus
+  };
+
   return (
     <div
       id={props.id}
       tabIndex="0"
       ref={containerRef}
       className="relative min-h-[40px] flex flex-col"
+      onFocus={() => setIsContainerFocused(true)}
     >
       <div
         onClick={toggleDropdown}
-        className={`w-full flex items-center justify-between rounded-lg cursor-pointer border border-gray-300 px-4 py-2 ${bgColorClaSS} ${extraClass}`}
+        className={`w-full flex items-center justify-between rounded-lg cursor-pointer px-4 py-2 ${bgColorClaSS} ${extraClass}`}
+        style={{ 
+          border: isContainerFocused ? '1px solid black' : '1px solid #D1D5DB' 
+        }}
       >
         <div className="flex items-center w-full justify-between">
           <div className="flex-grow overflow-hidden text-ellipsis whitespace-nowrap">
@@ -164,9 +178,7 @@ const MultiSelectDropdown = ({
           )}
 
           <ChevronDownIcon
-            className={`h-5 w-5 ml-2 transition-transform ${
-              open ? "rotate-180 text-gray-700" : "text-gray-400"
-            }`}
+            className={`h-5 w-5 ml-2 transition-transform ${open ? "rotate-180 text-gray-700" : "text-gray-400"}`}
           />
         </div>
       </div>
@@ -174,9 +186,7 @@ const MultiSelectDropdown = ({
       {open && (
         <div
           ref={dropdownRef}
-          className={`dropdown-menu ${
-            dropdownPosition === "top" ? "top" : "bottom"
-          } mt-2.5 `}
+          className={`dropdown-menu ${dropdownPosition === "top" ? "top" : "bottom"} mt-2.5 `}
         >
           <div className="ml-[8px] px-[12px] flex items-center space-x-2 sticky top-0 bg-white z-10">
             <SearchIcon className="text-gray-500 h-[14px] w-[14px]" />
@@ -185,6 +195,8 @@ const MultiSelectDropdown = ({
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={handleFocus} // Set focus state on input focus
+              onBlur={handleBlur} // Reset focus state on blur
               className="w-full p-2 text-sm outline-none bg-white"
             />
           </div>
