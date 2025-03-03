@@ -60,7 +60,7 @@ export const getHearAboutUsOptions = hearAboutUsList.map((source) => ({
 // Validation schema
 const validationSchema = Yup.object({
   kybStatus: Yup.array().min(1, "Select at least one KYB status"),
-  hearAboutUs: Yup.array().min(1, "Select at least one option"),
+  hearAboutUs: Yup.array().min(1, "Select at least one source"),
 });
 
 const Page = () => {
