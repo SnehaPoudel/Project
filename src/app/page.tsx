@@ -121,9 +121,12 @@ const Page = () => {
 
   return (
     <div className="p-6 flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-[80px] rounded-lg shadow-lg min-h-[300px] flex flex-col gap-6">
+      <div className="bg-white p-[80px] rounded-lg shadow-lg max-w-[460px] min-h-[300px] flex flex-col gap-6">
         <h1 className="text-xl font-semibold">Multi-Select Form</h1>
-
+        <p>
+          Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates sunt modi pariatur, voluptatem natus culpa. Fugiat eveniet inventore tempora harum. Exercitationem consectetur ducimus molestiae rem? Velit placeat nobis ad quas?
+          
+        </p>
         {/* Formik Form */}
         <Formik
           initialValues={{

@@ -137,22 +137,29 @@ const MultiSelectDropdown = ({
     setIsFocused(false); // Reset focus state when the input loses focus
   };
 
+   // Check for validation errors and touched state
+   const hasError = form.errors[field.name] && form.touched[field.name];
+   
   return (
     <div
       id={props.id}
       tabIndex="0"
       ref={containerRef}
-      className="relative min-h-[40px] flex flex-col"
+      className={`relative min-h-[40px] flex flex-col ${hasError ? "border-red-500" : ""}`}
       onFocus={() => setIsContainerFocused(true)}
       onBlur={() => setIsContainerFocused(false)}
     >
       <div
-        onClick={toggleDropdown}
-        className={`w-full flex items-center justify-between rounded-lg cursor-pointer px-4 py-2 ${bgColorClaSS} ${extraClass}`}
-        style={{ 
-          border: isContainerFocused ? '1px solid black' : '1px solid #D1D5DB' // Gray border when not focused
-        }}
-      >
+    onClick={toggleDropdown}
+    className={`w-full flex items-center justify-between rounded-lg cursor-pointer px-4 py-2 ${bgColorClaSS} ${extraClass}`}
+    style={{
+      border: isContainerFocused
+        ? "1px solid black"
+        : hasError
+        ? "1px solid red"  // Change to red border if there's an error
+        : "1px solid #D1D5DB", // Gray border when not focused and no error
+    }}
+  >
         <div className="flex items-center w-full justify-between">
           <div className="flex-grow overflow-hidden text-ellipsis whitespace-nowrap">
             <span className="text-sm text-gray-400">
