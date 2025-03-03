@@ -59,15 +59,9 @@ export const getHearAboutUsOptions = hearAboutUsList.map((source) => ({
 
 // Validation schema
 const validationSchema = Yup.object({
-  kybStatus: Yup.array()
-    .min(1, "Select at least one KYB status")  // Ensure at least one option is selected
-    .required("This field is required"),  // Ensure the field is not empty
-
-  hearAboutUs: Yup.array()
-    .min(1, "Select at least one option")  // Ensure at least one option is selected
-    .required("This field is required"),  // Ensure the field is not empty
+  kybStatus: Yup.array().min(1, "Select at least one KYB status"),
+  hearAboutUs: Yup.array().min(1, "Select at least one option"),
 });
-
 
 const Page = () => {
   const [selectedHearAboutUsOptions, setSelectedHearAboutUsOptions] = useState([]);
@@ -127,12 +121,9 @@ const Page = () => {
 
   return (
     <div className="p-6 flex items-center justify-center min-h-screen bg-gray-100">
-      <div className="bg-white p-[80px] rounded-lg max-w-[460px] shadow-lg min-h-[300px] flex flex-col gap-6">
+      <div className="bg-white p-[80px] rounded-lg shadow-lg min-h-[300px] flex flex-col gap-6">
         <h1 className="text-xl font-semibold">Multi-Select Form</h1>
-        <p>
-          Lorem ipsum dolor sit amet, consectetur adipisicing elit. Cupiditate similique aperiam voluptatum dicta nisi expedita neque dignissimos ullam molestiae qui vero non, corporis fugiat illo. Neque nesciunt sint perspiciatis officiis.
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Commodi at saepe perferendis labore, quos, incidunt facilis, totam velit esse sit omnis. 
-        </p>
+
         {/* Formik Form */}
         <Formik
           initialValues={{
@@ -161,12 +152,11 @@ const Page = () => {
                   component={MultiSelectDropdown}
                   title="Select KYB Status"
                   options={getKybStatusOptions}
-                  extraClass={`!w-[300px] h-[40px] text-neutral-500 no-scrollbar`}
+                  extraClass={`!w-[300px] h-[40px] text-neutral-500 ${errors.kybStatus && touched.kybStatus ? "border-red-500" : ""} no-scrollbar`}
                   bgColorClaSS="bg-none"
                   dropdownWidth="w-full"
                   registerRef={(ref: any) => registerDropdownRef("kybStatus", ref)}
                 />
-
                 {errors.kybStatus && touched.kybStatus && (
                   <p className="text-red-500 text-xs">{errors.kybStatus}</p>
                 )}
@@ -189,13 +179,18 @@ const Page = () => {
                   extraClass={`!w-[300px] h-[40px] text-neutral-500 ${errors.hearAboutUs && touched.hearAboutUs ? "border-red-500" : ""} no-scrollbar`}
                   bgColorClaSS="bg-none"
                   dropdownWidth="w-full"
-                  placeholder={selectedHearAboutUsOptions.length > 0 ? `${selectedHearAboutUsOptions.length} selected...` : "How did you hear about us?"}
+                  placeholder={
+                    selectedHearAboutUsOptions.length > 0
+                      ? `${selectedHearAboutUsOptions.length} selected...`
+                      : "How did you hear about us?"
+                  }
                   registerRef={(ref: any) => registerDropdownRef("hearAboutUs", ref)}
                 />
                 {errors.hearAboutUs && touched.hearAboutUs && (
                   <p className="text-red-500 text-xs">{errors.hearAboutUs}</p>
                 )}
               </div>
+              
 
               {/* Submit Button */}
               <button

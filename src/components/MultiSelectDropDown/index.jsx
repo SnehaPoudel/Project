@@ -10,7 +10,7 @@ const MultiSelectDropdown = ({
   handleSelect = () => {},
   field,
   form,
-  extraClass,
+  extraClass = "",
   bgColorClaSS = "bg-white",
   showIcons = false,
   dropdownWidth = "w-full",
@@ -22,14 +22,14 @@ const MultiSelectDropdown = ({
   const [filteredOptions, setFilteredOptions] = useState(options);
   const [searchQuery, setSearchQuery] = useState("");
   const [dropdownPosition, setDropdownPosition] = useState("bottom");
+  const [isFocused, setIsFocused] = useState(false);  // Track focus state of the dropdown input
   const [isContainerFocused, setIsContainerFocused] = useState(false);
   const scrollContainerRef = useRef(null);
   const containerRef = useRef(null);
   const dropdownRef = useRef(null);
+  const inputRef = useRef(null); // Ref for the input field
 
- 
-
-  // Handle clicking the dropdown
+  // Toggle dropdown function
   const toggleDropdown = () => {
     setOpen((prev) => {
       if (!prev && scrollContainerRef.current) {
@@ -39,6 +39,16 @@ const MultiSelectDropdown = ({
     });
   };
 
+  // Register methods with parent component
+  useEffect(() => {
+    if (registerRef) {
+      registerRef({
+        toggleDropdown,
+      });
+    }
+  }, [registerRef]);
+
+  // Filter options based on search query
   useEffect(() => {
     setFilteredOptions(
       options.filter((option) =>
@@ -47,11 +57,12 @@ const MultiSelectDropdown = ({
     );
   }, [searchQuery, options]);
 
+  // Handle clicking outside to close dropdown
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
         setOpen(false);
-        setIsContainerFocused(false);
+        setIsFocused(false); // Reset focus when clicking outside
       }
     };
     document.addEventListener("mousedown", handleClickOutside);
@@ -60,6 +71,7 @@ const MultiSelectDropdown = ({
     };
   }, []);
 
+  // Calculate position and height for dropdown based on viewport space
   useEffect(() => {
     if (!open) return;
 
@@ -72,6 +84,7 @@ const MultiSelectDropdown = ({
       const spaceBelow = viewportHeight - containerRect.bottom;
       const spaceAbove = containerRect.top;
 
+      // Toggle dropdown position based on space availability
       if (spaceBelow < 240 && spaceAbove > spaceBelow) {
         setDropdownPosition("top");
       } else {
@@ -116,19 +129,28 @@ const MultiSelectDropdown = ({
     }, 0);
   };
 
+  const handleFocus = () => {
+    setIsFocused(true); // Set focused state when the input is focused
+  };
+
+  const handleBlur = () => {
+    setIsFocused(false); // Reset focus state when the input loses focus
+  };
+
   return (
     <div
       id={props.id}
       tabIndex="0"
       ref={containerRef}
       className="relative min-h-[40px] flex flex-col"
+      onFocus={() => setIsContainerFocused(true)}
+      onBlur={() => setIsContainerFocused(false)}
     >
       <div
         onClick={toggleDropdown}
-        
-        className={`w-full flex items-center justify-between rounded-lg cursor-pointer px-4 py-2 ${bgColorClaSS} ${extraClass} ${form.errors[field.name] && form.touched[field.name] ? 'border-red-500' : ''}`}
-        style={{
-          border: form.errors[field.name] && form.touched[field.name] ? '1px solid #f44336' : '1px solid #D1D5DB',
+        className={`w-full flex items-center justify-between rounded-lg cursor-pointer px-4 py-2 ${bgColorClaSS} ${extraClass}`}
+        style={{ 
+          border: isContainerFocused ? '1px solid black' : '1px solid #D1D5DB' // Gray border when not focused
         }}
       >
         <div className="flex items-center w-full justify-between">
@@ -168,13 +190,17 @@ const MultiSelectDropdown = ({
           ref={dropdownRef}
           className={`dropdown-menu ${dropdownPosition === "top" ? "top" : "bottom"} mt-2.5 `}
         >
+          
           <div className="ml-[8px] px-[12px] flex items-center space-x-2 sticky top-0 bg-white z-10">
             <SearchIcon className="text-gray-500 h-[14px] w-[14px]" />
             <input
+              ref={inputRef}
               type="text"
               placeholder="Search..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={handleFocus} // Set focus state on input focus
+              onBlur={handleBlur} // Reset focus state on blur
               className="w-full p-2 text-sm outline-none bg-white"
             />
           </div>
