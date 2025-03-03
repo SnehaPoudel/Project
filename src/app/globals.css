@@ -20,13 +20,66 @@ body {
   font-family: 'Inter', Arial, Helvetica, sans-serif;
 }
 
-.scrollbar-hide::-webkit-scrollbar {
-  display: none;
+
+.hide-scrollbar {
+  -ms-overflow-style: none;  /* For Internet Explorer and Edge */
+  scrollbar-width: none;     /* For Firefox */
 }
 
-/* Hide scrollbar for Firefox */
-.scrollbar-hide {
-  scrollbar-width: none;
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;             /* For Chrome, Safari, and Opera */
 }
 
+/* Dropdown container should adapt to available space */
+.dropdown-container {
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  min-height: 40px;
+}
 
+/* Main dropdown trigger container */
+.dropdown-trigger {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  cursor: pointer;
+  background-color: white;
+  transition: all 0.3s ease;
+}
+
+/* Dropdown menu container */
+.dropdown-menu {
+  position: absolute;
+  top: 100%; /* Default to open below */
+  left: 0;
+  width: 100%;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  z-index: 50;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+  max-height: 240px; /* Default max height */
+  overflow-y: auto; /* To allow scrolling if too many options */
+}
+
+.dropdown-menu.top {
+  bottom: 100%; /* Open above if there's no space below */
+  top: auto;
+}
+
+.dropdown-menu.open {
+  visibility: visible;
+  opacity: 1;
+  transition: opacity 0.3s ease-in;
+}
+
+.dropdown-menu.hidden {
+  visibility: hidden;
+  opacity: 0;
+}

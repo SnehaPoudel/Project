@@ -41,7 +41,7 @@ const MenuV3 = ({
       <div
         key="all"
         onClick={() => onOptionClick('all')}
-        className="flex items-center justify-between px-3 py-2 cursor-pointer select-none hover:bg-gray-100 text-sm text-gray-600"
+        className="flex items-center justify-between h-[40px] px-3 py-2 cursor-pointer select-none hover:bg-gray-100 text-sm text-gray-600"
       >
         <div className="flex items-center gap-2.5">
           <input
@@ -95,7 +95,7 @@ const MenuV3 = ({
       <div
         key={option.key}
         onClick={() => onOptionClick(option.key)}
-        className="flex items-center justify-between px-3 py-2 cursor-pointer select-none hover:bg-neutral-100 text-sm text-neutral-800"
+        className="flex items-center justify-between h-[40px] px-3 py-2 cursor-pointer select-none hover:bg-neutral-100 text-sm text-neutral-800"
       >
         <div className="flex items-center gap-2.5">
           <input

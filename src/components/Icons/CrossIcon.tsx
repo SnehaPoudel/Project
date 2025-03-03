@@ -8,7 +8,7 @@ const CrossIcon = () => (
     viewBox="0 0 10 10" 
     fill="none"
     stroke="currentColor" // Inherit text color from parent
-    strokeWidth="1.5" 
+    strokeWidth="1" 
     strokeLinecap="round" 
     strokeLinejoin="round"
   >
