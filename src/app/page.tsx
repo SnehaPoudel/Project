@@ -3,6 +3,8 @@ import React, { useState, useRef } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import MultiSelectDropdown from "../components/MultiSelectDropdown";
+import { getCountryOptionsV2 } from './../utils/helpers';
+import { countriesData } from './../utils/CountriesData';
 
 // List of KYB status options
 export const kybStatus = [
@@ -61,8 +63,8 @@ export const getHearAboutUsOptions = hearAboutUsList.map((source) => ({
 const validationSchema = Yup.object({
   kybStatus: Yup.array().min(1, "Select at least one KYB status"),
   hearAboutUs: Yup.array().min(1, "Select at least one source"),
+  countries: Yup.array().min(1, "Select at least one country"),
 });
-
 const Page = () => {
   const [selectedHearAboutUsOptions, setSelectedHearAboutUsOptions] = useState([]);
   
@@ -132,11 +134,12 @@ const Page = () => {
           initialValues={{
             kybStatus: [],
             hearAboutUs: [],
+            countries: [],
           }}
           validationSchema={validationSchema}
           onSubmit={(values) => {
             console.log("Form Submitted:", values);
-            alert(`Selected KYB Status: ${values.kybStatus.join(", ")}\nSelected Sources: ${values.hearAboutUs.join(", ")}`);
+            alert(`Selected KYB Status: ${values.kybStatus.join(", ")}\nSelected Sources: ${values.hearAboutUs.join(", ")}\nSelected Countries: ${values.countries.join(", ")}`);
           }}
         >
           {({ errors, touched, setFieldValue }) => (
@@ -193,6 +196,33 @@ const Page = () => {
                   <p className="text-red-500 text-xs">{errors.hearAboutUs}</p>
                 )}
               </div>
+
+              {/* Countries Dropdown */}
+              <div className="flex flex-col gap-2">
+                <div
+                  onClick={() => handleLabelClick("countries")}
+                  className="block text-sm font-medium text-gray-700 cursor-pointer"
+                >
+                  Select Countries
+                  <span className="text-red-500"> *</span>
+                </div>
+                <Field
+                  name="countries"
+                  component={MultiSelectDropdown}
+                  title="Select Countries"
+                  options={getCountryOptionsV2(countriesData)}
+                  extraClass={`!w-[300px] h-[40px] text-neutral-500 ${errors.countries && touched.countries ? "border-red-500" : ""} no-scrollbar`}
+                  bgColorClaSS="bg-none"
+                  dropdownWidth="w-full"
+                  showIcons={true} // Enable icon display
+                  showSubtitles={true} // Enable subtitle display
+                  registerRef={(ref: any) => registerDropdownRef("countries", ref)}
+                />
+                {errors.countries && touched.countries && (
+                  <p className="text-red-500 text-xs">{errors.countries}</p>
+                )}
+              </div>
+
               
 
               {/* Submit Button */}

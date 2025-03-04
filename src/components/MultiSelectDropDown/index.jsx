@@ -17,6 +17,7 @@ const MultiSelectDropdown = ({
   showIcons = false,
   dropdownWidth = "w-full",
   registerRef,
+  showSubtitles = false,
   ...props
 }) => {
   const [open, setOpen] = useState(false);
@@ -216,14 +217,15 @@ const MultiSelectDropdown = ({
 
           <div className="relative">
             <div ref={scrollContainerRef} className="overflow-y-auto px-2 py-2 hide-scrollbar">
-              <MenuV3
-                options={filteredOptions}
-                activeKey={selectedOptions}
-                onOptionClick={onSelect}
-                showIcons={showIcons}
-                title={title}
-                className="font-medium"
-              />
+            <MenuV3
+              options={filteredOptions}
+              activeKey={selectedOptions}
+              onOptionClick={onSelect}
+              showIcons={showIcons} // Pass down showIcons prop
+              showSubtitles={showSubtitles} // Pass down showSubtitles prop
+              title={title}
+              className="font-medium"
+            />
             </div>
           </div>
         </div>

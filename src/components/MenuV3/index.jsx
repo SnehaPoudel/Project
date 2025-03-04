@@ -108,6 +108,9 @@ const MenuV3 = ({
           {showIcons && option.icon && <div>{option.icon}</div>}
           <span>{option.label}</span>
         </div>
+        {showSubtitles && option.subtitle && (
+        <div className="text-sm text-neutral-600">{option.subtitle}</div> 
+      )}
       </div>
     );
   });
