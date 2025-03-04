@@ -3,11 +3,12 @@ import React from "react";
 import clsx from "clsx";
 
 type ButtonProps = {
-  children: React.ReactNode; 
-  handleClick?: () => void; 
-  variant?: "primary" | "secondary" | "outline" | "text" | "fullWidth" | "iconbutton"; 
+  children: React.ReactNode;
+  handleClick?: () => void;
+  variant?: "primary" | "secondary" | "outline" | "text" | "fullWidth" | "iconbutton";
   customIcon?: React.ReactNode;
   className?: string;
+  type?: "button" | "submit" | "reset"; // Allow type prop
 };
 
 const Button: React.FC<ButtonProps> = ({
@@ -20,7 +21,7 @@ const Button: React.FC<ButtonProps> = ({
     "inline-flex items-center gap-[6px] font-medium transition-all duration-300 rounded-[6px] leading-[20px] font-[500]";
   // Variants
   const variants = {
-    primary: "bg-[#1D1D22] p-[11.07px] min-w-[152px] h-[36px] hover:bg-[#333333] text-[#FFF] text-[14.654px] justify-center", 
+    primary: "bg-[#1D1D22] px-4 py-2 h-[36px] hover:bg-[#333333] text-[#FFF] text-[14.654px] justify-center", 
     secondary: "bg-[#007AFF1A] px-[10px] py-[6px] min-w-[121px] h-[32px] text-[#007AFF] hover:bg-[#007AFF33] justify-center",
     outline: "border-2 border-[#1D1D22] text-[#1D1D22] px-[10px] py-[6px] bg-transparent hover:bg-[#1D1D22] hover:text-[#FFF] min-w-[152px] h-[32px] flex items-center justify-center rounded-[6px]",
     text: "bg-transparent text-[#52A5FF] hover:text-[#005BB5] hover:underline p-0 m-0 h-auto justify-center whitespace-nowrap", 

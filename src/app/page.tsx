@@ -3,8 +3,8 @@ import React, { useState, useRef } from "react";
 import { Formik, Form, Field } from "formik";
 import * as Yup from "yup";
 import MultiSelectDropdown from "../components/MultiSelectDropdown";
-import { getCountryOptionsV2 } from './../utils/helpers';
 import { countriesData } from './../utils/CountriesData';
+import Button from "@/components/Buttons";
 
 // List of KYB status options
 export const kybStatus = [
@@ -58,6 +58,34 @@ export const getHearAboutUsOptions = hearAboutUsList.map((source) => ({
   label: source,
   name: source,
 }));
+
+// Convert Countries options into dropdown-compatible format
+
+interface Country {
+  identifier: string;
+  name: string;
+  flagUrl?: string;
+}
+
+export const getCountryOptionsV2 = (countryList: Country[] = []) => {
+  return countryList.map((country) => ({
+    key: country.identifier,
+    label: country.name,
+    icon: (
+      <div className="border rounded-full">
+        <img
+          src={country.flagUrl || '/images/default-profile-picture.svg'}
+          alt={`Flag of ${country.name}`}
+          className="h-6 w-6 rounded-full object-cover"
+          style={{
+            border: '1px solid #D7DADC',
+          }}
+        ></img>
+      </div>
+    ),
+    subtitle: country.identifier,
+  }));
+};
 
 // Validation schema
 const validationSchema = Yup.object({
@@ -222,16 +250,14 @@ const Page = () => {
                   <p className="text-red-500 text-xs">{errors.countries}</p>
                 )}
               </div>
-
-              
-
               {/* Submit Button */}
-              <button
-                type="submit"
-                className="bg-[#171717] text-white text-[14px] px-4 py-2 h-[36px] rounded-lg hover:bg-[#404040] transition-all flex items-center justify-center"
-              >
-                Submit
-              </button>
+
+              <Button
+                      type="submit"
+                      variant="primary"  
+                    >
+                      Submit
+              </Button>
             </Form>
           )}
         </Formik>
