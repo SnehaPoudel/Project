@@ -16,7 +16,7 @@ const MultiSelectDropdown = ({
   bgColorClaSS = "bg-white",
   showIcons = false,
   dropdownWidth = "w-full",
-  registerRef, // Prop to register the component's ref
+  registerRef,
   ...props
 }) => {
   const [open, setOpen] = useState(false);
@@ -24,13 +24,10 @@ const MultiSelectDropdown = ({
   const [filteredOptions, setFilteredOptions] = useState(options);
   const [searchQuery, setSearchQuery] = useState("");
   const [dropdownPosition, setDropdownPosition] = useState("bottom");
-  const [isFocused, setIsFocused] = useState(false);
-  const [isContainerFocused, setIsContainerFocused] = useState(false);
   const { validateField } = useFormikContext();
   const scrollContainerRef = useRef(null);
   const containerRef = useRef(null);
   const dropdownRef = useRef(null);
-  const inputRef = useRef(null); // Ref for the input field
 
   // Toggle dropdown function
   const toggleDropdown = () => {
@@ -65,9 +62,8 @@ const MultiSelectDropdown = ({
     const handleClickOutside = (event) => {
       if (containerRef.current && !containerRef.current.contains(event.target)) {
         setOpen(false);
-        // Trigger validation when clicking outside
         if (selectedOptions.length === 0) {
-          validateField(field.name); // Validate field based on existing validation schema
+          validateField(field.name);
         }
       }
     };
@@ -76,6 +72,7 @@ const MultiSelectDropdown = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, [selectedOptions]);
+
   // Calculate position and height for dropdown based on viewport space
   useEffect(() => {
     if (!open) return;
@@ -85,11 +82,9 @@ const MultiSelectDropdown = ({
 
       const containerRect = containerRef.current.getBoundingClientRect();
       const viewportHeight = window.innerHeight;
-
       const spaceBelow = viewportHeight - containerRect.bottom;
       const spaceAbove = containerRect.top;
 
-      // Toggle dropdown position based on space availability
       if (spaceBelow < 240 && spaceAbove > spaceBelow) {
         setDropdownPosition("top");
       } else {
@@ -107,10 +102,8 @@ const MultiSelectDropdown = ({
     };
   }, [open]);
 
-
   const onSelect = (key) => {
     const previousScrollTop = scrollContainerRef.current.scrollTop;
-
     const selectedValues = field.value || [];
     const isSelected = selectedValues.includes(key);
 
@@ -135,29 +128,25 @@ const MultiSelectDropdown = ({
     }, 0);
   };
 
-  const handleFocus = () => {
-    setIsFocused(true); // Set focused state when the input is focused
-  };
-
   const handleBlur = () => {
-    setIsFocused(false); // Reset focus state when the input loses focus
-    form.setFieldTouched(field.name, true);  // Mark field as touched on blur
+    form.setFieldTouched(field.name, true);
   };
 
-    // Trigger validation when dropdown is closed and no options are selected
-    useEffect(() => {
-      if (!open && selectedOptions.length === 0) {
-        // Trigger the validation for the field (kybStatus or hearAboutUs) by validating the field
-        validateField(field.name);
-      }
-    }, [open, selectedOptions, validateField, field.name]);
+  useEffect(() => {
+    if (!open && selectedOptions.length === 0) {
+      validateField(field.name);
+    }
+  }, [open, selectedOptions, validateField, field.name]);
 
-
+  // Border logic
+  const isMultiSelected = selectedOptions.length > 0;
   const borderColor = form.errors[field.name] && form.touched[field.name]
-    ? "1px solid red" // Red border if there's an error and field is touched
-    : isContainerFocused
-    ? "1px solid black" // Black border when focused 
-    : "1px solid #D1D5DB"; // Default gray border when not focused, no selection, and no error
+    ? "1px solid red" // Error state
+    : open 
+    ? "1px solid black" // Dropdown open state
+    : isMultiSelected 
+    ? "1px solid #D1D5DB" // Multi-select state (highlight selection)
+    : "1px solid #D1D5DB"; // Default border
 
   return (
     <div
@@ -165,14 +154,13 @@ const MultiSelectDropdown = ({
       tabIndex="0"
       ref={containerRef}
       className="relative min-h-[40px] flex flex-col"
-      onFocus={() => setIsContainerFocused(true)}
       onBlur={handleBlur}
     >
       <div
-        onClick={toggleDropdown} // Trigger validation on click
+        onClick={toggleDropdown}
         className={`w-full flex items-center justify-between rounded-lg cursor-pointer px-4 py-2 ${bgColorClaSS} ${extraClass}`}
         style={{
-          border: borderColor, // Apply the border color based on error and focus
+          border: borderColor,
         }}
       >
         <div className="flex items-center w-full justify-between">
@@ -187,7 +175,7 @@ const MultiSelectDropdown = ({
             <div className="flex items-center bg-[#DBEAFE] text-[#1447E6] text-sm font-semibold px-3 py-1 rounded-full ml-2">
               {selectedOptions.length}
               <button
-                className="ml-2 text-[#1447E6] "
+                className="ml-2 text-[#1447E6]"
                 onClick={(e) => {
                   e.stopPropagation();
                   e.preventDefault();
@@ -196,13 +184,15 @@ const MultiSelectDropdown = ({
                   handleSelect([]);
                 }}
               >
-                <CrossIcon className="w-4 h-4 " />
+                <CrossIcon className="w-4 h-4" />
               </button>
             </div>
           )}
 
           <ChevronDownIcon
-            className={`h-5 w-5 ml-2 transition-transform ${open ? "rotate-180 text-gray-700" : "text-gray-400"}`}
+            className={`h-5 w-5 ml-2 transition-transform ${
+              open ? "rotate-180 text-gray-700" : "text-gray-400"
+            }`}
           />
         </div>
       </div>
@@ -210,12 +200,11 @@ const MultiSelectDropdown = ({
       {open && (
         <div
           ref={dropdownRef}
-          className={`dropdown-menu ${dropdownPosition === "top" ? "top" : "bottom"} mt-2.5 `}
+          className={`dropdown-menu ${dropdownPosition === "top" ? "top" : "bottom"} mt-2.5`}
         >
           <div className="ml-[8px] px-[12px] flex items-center space-x-2 sticky top-0 bg-white z-10">
             <SearchIcon className="text-gray-500 h-[14px] w-[14px]" />
             <input
-              ref={inputRef}
               type="text"
               placeholder="Search..."
               value={searchQuery}
@@ -226,10 +215,7 @@ const MultiSelectDropdown = ({
           <div className="border-t border-gray-200 mx-2 bg-white z-5 shadow-sm"></div>
 
           <div className="relative">
-            <div
-              ref={scrollContainerRef}
-              className="overflow-y-auto px-2 py-2 hide-scrollbar"
-            >
+            <div ref={scrollContainerRef} className="overflow-y-auto px-2 py-2 hide-scrollbar">
               <MenuV3
                 options={filteredOptions}
                 activeKey={selectedOptions}
@@ -247,6 +233,3 @@ const MultiSelectDropdown = ({
 };
 
 export default MultiSelectDropdown;
-
-
-
