@@ -242,8 +242,8 @@ const Page = () => {
                   extraClass={`!w-[300px] h-[40px] text-neutral-500 ${errors.countries && touched.countries ? "border-red-500" : ""} no-scrollbar`}
                   bgColorClaSS="bg-none"
                   dropdownWidth="w-full"
-                  showIcons={true} // Enable icon display
-                  showSubtitles={true} // Enable subtitle display
+                  showIcons={true} 
+                  showSubtitles={true} 
                   registerRef={(ref: any) => registerDropdownRef("countries", ref)}
                 />
                 {errors.countries && touched.countries && (

@@ -73,7 +73,7 @@ const MenuV3 = ({
             checked={isActive}
             onChange={() => onOptionClick(option.key)}
             onClick={(e) => e.stopPropagation()}
-            className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+            className="form-checkbox h-[16px] w-[16px] text-blue-600 transition duration-150 ease-in-out"
           />
           {showIcons && option.icon && <div>{option.icon}</div>}
           <div className={`text-sm text-neutral-800 ${isActive ? '!text-blue-600 !font-medium' : 'hover:text-neutral-900'}`}>{option.label}</div>
@@ -103,7 +103,7 @@ const MenuV3 = ({
             checked={activeKey.includes(option.key)}
             onChange={() => onOptionClick(option.key)}
             onClick={(e) => e.stopPropagation()}
-            className="form-checkbox h-4 w-4 text-blue-600 transition duration-150 ease-in-out"
+            className="form-checkbox h-[16px] w-[16px] text-blue-600 transition duration-150 ease-in-out"
           />
           {showIcons && option.icon && <div>{option.icon}</div>}
           <span>{option.label}</span>

@@ -221,8 +221,8 @@ const MultiSelectDropdown = ({
               options={filteredOptions}
               activeKey={selectedOptions}
               onOptionClick={onSelect}
-              showIcons={showIcons} // Pass down showIcons prop
-              showSubtitles={showSubtitles} // Pass down showSubtitles prop
+              showIcons={showIcons} 
+              showSubtitles={showSubtitles} 
               title={title}
               className="font-medium"
             />
