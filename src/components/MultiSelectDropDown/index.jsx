@@ -199,37 +199,44 @@ const MultiSelectDropdown = ({
       </div>
 
       {open && (
-        <div
-          ref={dropdownRef}
-          className={`dropdown-menu ${dropdownPosition === "top" ? "top" : "bottom"} mt-2.5`}
-        >
-          <div className="ml-[8px] px-[12px] flex items-center space-x-2 sticky top-0 bg-white z-10">
-            <SearchIcon className="text-gray-500 h-[14px] w-[14px]" />
-            <input
-              type="text"
-              placeholder="Search..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full p-2 text-sm outline-none bg-white"
-            />
-          </div>
-          <div className="border-t border-gray-200 mx-2 bg-white z-5 shadow-sm"></div>
+      <div
+        ref={dropdownRef}
+        className={`dropdown-menu ${dropdownPosition === "top" ? "top" : "bottom"} mt-2.5`}
+      >
+        <div className="ml-[8px] px-[12px] flex items-center space-x-2 sticky top-0 bg-white z-10">
+          <SearchIcon className="text-gray-500 h-[14px] w-[14px]" />
+          <input
+            type="text"
+            placeholder="Search..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            className="w-full p-2 text-sm outline-none bg-white"
+          />
+        </div>
+        <div className="border-t border-gray-200 mx-2 bg-white z-5 shadow-sm"></div>
 
-          <div className="relative">
-            <div ref={scrollContainerRef} className="overflow-y-auto px-2 py-2 hide-scrollbar">
-            <MenuV3
-              options={filteredOptions}
-              activeKey={selectedOptions}
-              onOptionClick={onSelect}
-              showIcons={showIcons} 
-              showSubtitles={showSubtitles} 
-              title={title}
-              className="font-medium"
-            />
-            </div>
+        <div className="relative">
+          <div ref={scrollContainerRef} className="overflow-y-auto px-2 py-2 hide-scrollbar">
+            {filteredOptions.length > 0 ? (
+              <MenuV3
+                options={filteredOptions}
+                activeKey={selectedOptions}
+                onOptionClick={onSelect}
+                showIcons={showIcons}
+                showSubtitles={showSubtitles}
+                title={title}
+                className="font-medium"
+                hideSelectAll={searchQuery.length > 0}  // Hide Select All while searching
+              />
+            ) : (
+              <div className="flex items-center justify-center h-[40px] px-3 py-2 text-sm text-gray-500 select-none">
+                Option not found
+              </div>
+            )}
           </div>
         </div>
-      )}
+      </div>
+    )}
     </div>
   );
 };
